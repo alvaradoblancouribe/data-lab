@@ -220,7 +220,7 @@ int bitXor(int x, int y) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  return (((~(!!x))&y)|((!!x)&z))
 }
 /* 
  * greatestBitPos - return a mask that marks the position of the
@@ -243,7 +243,7 @@ int greatestBitPos(int x) {
  */
 int divpwr2(int x, int n) {
     int result = (x + ((1<<n)-1)) >>n;
-
+    //maybe rounding causes an issue but x>>n should work?
     return result;
 }
 /* 
@@ -254,7 +254,7 @@ int divpwr2(int x, int n) {
  *   Rating: 3
  */
 int isNonNegative(int x) {
-  return 2;
+  return (!!(x>>2))
 }
 /*
  * satMul2 - multiplies by 2, saturating to Tmin or Tmax if overflow
@@ -276,7 +276,7 @@ int satMul2(int x) {
  *   Rating: 3
  */
 int isLess(int x, int y) {
-  return 2;
+  return ((x+(~y+1))>>31);
 }
 /* 
  * isAsciiDigit - return 1 if 0x30 <= x <= 0x39 (ASCII codes for characters '0' to '9')
@@ -326,6 +326,8 @@ int ilog2(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
+
+
  return 2;
 }
 /* 
