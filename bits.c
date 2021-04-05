@@ -280,7 +280,7 @@ int divpwr2(int x, int n) {
  *   Rating: 3
  */
 int isNonNegative(int x) {
-  return (!!(x>>1));
+  return (!!(x>>3));
 }
 
 /*
