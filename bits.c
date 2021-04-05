@@ -219,7 +219,7 @@ int bitXor(int x, int y) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return ~(((~(!!x))&y)|((!!x)&z));
+  return (((~(!!x))&y)|((!!x)&z));
 }
 /* 
  * greatestBitPos - return a mask that marks the position of the
@@ -256,7 +256,7 @@ int greatestBitPos(int x) {
   num_zero = num_zero + !(t >> 31) + !(t >> 30);
 
   // if (x != 0) return 1 << (31 - n) else return 0
-  return !!x << (32 + ~num_zero);
+  return (!!x << (32 + ~num_zero);
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -268,7 +268,7 @@ int greatestBitPos(int x) {
  */
 int divpwr2(int x, int n) {
     //int result = (x + ((1<<n)-1)) >>n;
-    int result = x >> n 
+    int result = x >> n; 
     //maybe rounding causes an issue but x>>n should work?
     return result;
 }
@@ -280,7 +280,7 @@ int divpwr2(int x, int n) {
  *   Rating: 3
  */
 int isNonNegative(int x) {
-  return ~(!!(x>>2));
+  return (~(!!(x>>2)));
 }
 
 /*
