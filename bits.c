@@ -256,7 +256,7 @@ int greatestBitPos(int x) {
   num_zero = num_zero + !(t >> 31) + !(t >> 30);
 
   // if (x != 0) return 1 << (31 - n) else return 0
-  return (!!x << (32 + ~num_zero);
+  return (!!x << (32 + ~num_zero));
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
