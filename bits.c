@@ -206,10 +206,9 @@ int isTmin(int x) {
  *   Legal ops: ~ &
  *   Max ops: 14
  *   Rating: 1
- not working at the moment 
  */
 int bitXor(int x, int y) {
-  int result = (~x & y)&y;
+  int result = ~(~x&~y)&~(x&y);
   return result;
 }
 /* 
@@ -220,7 +219,7 @@ int bitXor(int x, int y) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return (((~(!!x))&y)|((!!x)&z))
+  return ~(((~(!!x))&y)|((!!x)&z));
 }
 /* 
  * greatestBitPos - return a mask that marks the position of the
@@ -268,7 +267,8 @@ int greatestBitPos(int x) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-    int result = (x + ((1<<n)-1)) >>n;
+    //int result = (x + ((1<<n)-1)) >>n;
+    int result = x >> n 
     //maybe rounding causes an issue but x>>n should work?
     return result;
 }
@@ -280,7 +280,7 @@ int divpwr2(int x, int n) {
  *   Rating: 3
  */
 int isNonNegative(int x) {
-  return (!!(x>>2))
+  return ~(!!(x>>2));
 }
 
 /*
@@ -323,7 +323,7 @@ int isAsciiDigit(int x) {
   first = !((first + ~0x30 + 1) >> 31);
   unsigned second = x;  
   second = !((~second + 1 + 0x39) >> 31);
-  return first & second;
+  return (first & second);
 }
 /*
  * trueThreeFourths - multiplies by 3/4 rounding toward 0,
