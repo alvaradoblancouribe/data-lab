@@ -231,7 +231,33 @@ int conditional(int x, int y, int z) {
  *   Rating: 4 
  */
 int greatestBitPos(int x) {
-  return 2;
+  int t = x;
+  int num_zero = 0;
+
+  int leading_n_zero = !(t >> 16);
+  int n = leading_n_zero << 4;
+  num_zero = n;
+  t = t << n;
+
+  leading_n_zero = !(t >> 24);
+  n = leading_n_zero << 3;
+  num_zero = num_zero + n;
+  t = t << n;
+
+  leading_n_zero = !(t >> 28);
+  n = leading_n_zero << 2;
+  num_zero = num_zero + n;
+  t = t << n;
+
+  leading_n_zero = !(t >> 30);
+  n = leading_n_zero << 1;
+  num_zero = num_zero + n;
+  t = t << n;
+
+  num_zero = num_zero + !(t >> 31) + !(t >> 30);
+
+  // if (x != 0) return 1 << (31 - n) else return 0
+  return !!x << (32 + ~num_zero);
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -256,6 +282,7 @@ int divpwr2(int x, int n) {
 int isNonNegative(int x) {
   return (!!(x>>2))
 }
+
 /*
  * satMul2 - multiplies by 2, saturating to Tmin or Tmax if overflow
  *   Examples: satMul2(0x30000000) = 0x60000000
@@ -266,7 +293,11 @@ int isNonNegative(int x) {
  *   Rating: 3
  */
 int satMul2(int x) {
-  return 2;
+   int x_mul_2 = x << 1;
+  int overflow_mask = (x_mul_2 ^ x) >> 31;
+  int tmin = 1 << 31;
+  int x_mul_2_is_neg = x_mul_2 >> 31;
+  return (~overflow_mask & x_mul_2) | (overflow_mask & (tmin ^ (x_mul_2_is_neg)));
 }
 /* 
  * isLess - if x < y  then return 1, else return 0 
@@ -288,7 +319,11 @@ int isLess(int x, int y) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  return 2;
+  unsigned first = x;
+  first = !((first + ~0x30 + 1) >> 31);
+  unsigned second = x;  
+  second = !((~second + 1 + 0x39) >> 31);
+  return first & second;
 }
 /*
  * trueThreeFourths - multiplies by 3/4 rounding toward 0,
@@ -302,7 +337,26 @@ int isAsciiDigit(int x) {
  */
 int trueThreeFourths(int x)
 {
-  return 2;
+    /*
+    * Since we have to avoid errors due to overflow, we can calculate
+    * the result of x/4 with remainder first and then calculate the
+    * result of 3*(x/4) + 3*remainder.
+    *
+    * For negative x, since the right shift perform division that rounds
+    * towards negative infinity, we must add one to it if there is any
+    * remainder after division so that the result is rounding towards 0.
+    */
+
+  int x_div_4 = x >> 2;
+  int remainder = x & 0x3;  // The remainder of x/4
+
+  int x_div_4_mul_3 = (x_div_4 << 1) + x_div_4;
+
+  int x_is_neg = x >> 31;
+  int remainder_mul_3 = (remainder << 1) + remainder;
+  int carry = (remainder_mul_3 + (x_is_neg & 0x3)) >> 2;
+
+  return x_div_4_mul_3 + carry;
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
@@ -312,7 +366,22 @@ int trueThreeFourths(int x)
  *   Rating: 4
  */
 int ilog2(int x) {
-  return 2;
+  int result = 0;
+  int b4 = !!(x >> 16);
+  int b3 = 0;
+  int b2 = 0;
+  int b1 = 0;
+  int b0 = 0;
+  result = b4 << 4;
+  b3 = !!(x >> (8 + result));
+  result = result | (b3 << 3);
+  b2 = !!(x >> (4 + result));
+  result = result | (b2 << 2);
+  b1 = !!(x >> (2 + result));
+  result = result | (b1 << 1);
+  b0 = !!(x >> (1 + result));
+  result = result | b0;
+  return result;
 }
 /* 
  * float_neg - Return bit-level equivalent of expression -f for
